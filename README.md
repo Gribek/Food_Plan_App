@@ -1,16 +1,18 @@
+<img alt="Logo" src="http://coderslab.pl/svg/logo-coderslab.svg" width="400">
+
 # ScrumLab Python
 
 ## Jak skonfigurować aplikację?
 
-Co skonfigurowaliśmy za Ciebie?
+### Co skonfigurowaliśmy za Ciebie?
 
 - szablony
-  - umieszczaj w aplikacji **jedzonko** w katalogu **templates**,
+  - umieszczaj je w aplikacji **jedzonko** w katalogu **templates**,
 - pliki statyczne
   - pliki statyczne (czyli wszystkie pliki, które są serwowane przez aplikację: obrazki, pliki CSS, JS itp.)
   umieszczaj w katalogu **static**, który znajduje się w głównym katalogu projektu.
 
-Czego nie skonfigurowaliśmy?
+### Czego nie skonfigurowaliśmy?
 
 - bazy danych (ze względów bezpieczeństwa)
 
@@ -34,4 +36,4 @@ stałą `DATABASES` z pliku **local_settings.py**. Tam trzymaj dane do połącze
 Nie umieszczaj tego pliku pod kontrolą Gita. Aby ułatwić Ci pracę, przygotowaliśmy 
 plik **local_settings.py.example**, w którym znajdziesz przygotowane odpowiednie dane.
 Wystarczy tylko, że zmienisz plikowi **local_settings.py.example** nazwę na  **local_settings.py** 
-i uzupełnisz odpowiednie dane.
+i uzupełnisz go.
