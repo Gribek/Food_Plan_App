@@ -118,5 +118,5 @@ try:
     from scrumlab.local_settings import DATABASES
 except ModuleNotFoundError:
     print("Brak konfiguracji bazy danych w pliku local_settings.py!")
-    print("Uzupełnij i dane i spróbuj ponownie!")
+    print("Uzupełnij dane i spróbuj ponownie!")
     exit(0)
