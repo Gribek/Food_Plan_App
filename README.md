@@ -18,7 +18,7 @@
 
 **Pamiętaj:** nie należy trzymać danych wrażliwych pod kontrolą Gita! Takimi danymi wrażliwymi
 są m. in. dane do połączenia z bazą danych. Te dane trzymamy w pliku **local_settings.py**,
-którego nie znajdziesz w tym repozytorium (ten plik jest dodany do **.gitignore**)!
+którego nie znajdziesz w tym repozytorium (plik jest dodany do **.gitignore**)!
 
 Zajrzyj do pliku **settings.py**, znajdziesz w nim następującą sekcję:
 
