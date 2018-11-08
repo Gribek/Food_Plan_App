@@ -37,3 +37,7 @@ Nie umieszczaj tego pliku pod kontrolą Gita. Aby ułatwić Ci pracę, przygotow
 plik **local_settings.py.example**, w którym znajdziesz przygotowane odpowiednie dane.
 Wystarczy tylko, że zmienisz plikowi **local_settings.py.example** nazwę na  **local_settings.py** 
 i uzupełnisz go.
+
+--- 
+
+Jeśli wszystko skonfigurowałeś poprawnie, to pod adresem http://localhost:8000/index zobaczysz przykładową stronę.
