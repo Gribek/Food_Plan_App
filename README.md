@@ -40,4 +40,4 @@ i uzupełnisz go.
 
 --- 
 
-Jeśli wszystko skonfigurowałeś poprawnie, to pod adresem http://localhosst:8000/index zobaczysz przykładową stronę.
+Jeśli wszystko skonfigurowałeś poprawnie, to pod adresem http://localhost:8000/index zobaczysz przykładową stronę.
