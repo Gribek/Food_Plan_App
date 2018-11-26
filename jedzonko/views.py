@@ -9,3 +9,28 @@ class IndexView(View):
     def get(self, request):
         ctx = {"actual_date": datetime.now()}
         return render(request, "test.html", ctx)
+
+class LandingPage(View):
+
+    def get(self, request):
+        return render(request, "index.html")
+
+class Recipe_List(View):
+
+    def get(self, request):
+        return render(request, "recipes.html")
+
+class ContactView(View):
+
+    def get(self, request):
+        return render(request, "index.html")
+
+class AboutView(View):
+
+    def get(self, request):
+        return render(request, "index.html")
+
+class MainPage(View):
+
+    def get(self, request):
+        return render(request, "dashboard.html")
