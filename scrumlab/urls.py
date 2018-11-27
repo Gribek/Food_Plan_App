@@ -17,16 +17,11 @@ from django.contrib import admin
 from django.urls import path, re_path
 from jedzonko.views import *
 
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^$', IndexView.as_view()),
     path('add', add_test_data_to_database),
-
-
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('index/', IndexView.as_view()),
     re_path(r'^$', LandingPage.as_view()),
     re_path('^main$', MainPage.as_view()),
     # re_path(r'recipe/(?P<id>\d+)', ),
