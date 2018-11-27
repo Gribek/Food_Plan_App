@@ -15,8 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
+from jedzonko.views import *
 
-from jedzonko.views import IndexView, Recipe_List, LandingPage, ContactView, AboutView, MainPage
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    re_path(r'^$', IndexView.as_view()),
+    path('add', add_test_data_to_database),
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +38,7 @@ urlpatterns = [
     # re_path(r'plan/add/details', ),
     re_path('^contact', ContactView.as_view()),
     re_path('^about', AboutView.as_view()),
+
 
 ]
 
