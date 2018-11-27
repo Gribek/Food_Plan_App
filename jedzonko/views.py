@@ -45,3 +45,30 @@ def add_test_data_to_database(request):
     Recipe.objects.create(name="zapiekanka", ingredients="asfag, sdgvdh, rgdrtgdt, dtrcgtfcgbt",
                           description="shdbdicnsidyfgnciudygfcyugnifyseivfumxsyerifsrxmirybg",
                           preparation_time=30)
+        
+
+class LandingPage(View):
+
+    def get(self, request):
+        return render(request, "index.html")
+
+class Recipe_List(View):
+
+    def get(self, request):
+        return render(request, "recipes.html")
+
+class ContactView(View):
+
+    def get(self, request):
+        return render(request, "index.html")
+
+class AboutView(View):
+
+    def get(self, request):
+        return render(request, "index.html")
+
+class MainPage(View):
+
+    def get(self, request):
+        return render(request, "dashboard.html")
+
