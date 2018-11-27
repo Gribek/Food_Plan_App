@@ -1,8 +1,5 @@
-from django.shortcuts import render, HttpResponse, redirect
 from .models import *
-from django.views import View
-from datetime import datetime
-from random import randint, shuffle
+from random import shuffle
 from django.shortcuts import render
 from django.views import View
 
@@ -27,24 +24,23 @@ class IndexView(View):
 
 
 def add_test_data_to_database(request):
-    Recipe.objects.create(name="Gulasz", ingredients="mięso, papryka, i kilka innych",
-                          description="shdbdicnsidyfgnciudygfcyugnifyseivfumxsyerifsrxmirybg",
-                          preparation_time=30)
-    Recipe.objects.create(name="Naleśniki", ingredients="mąka, woda, sól, dżem",
-                          description="shdbdicnsidyfgnciudygfcyugnifyseivfumxsyerifsrxmirybg",
-                          preparation_time=45)
-    Recipe.objects.create(name="Gołąbki", ingredients="kapusta, ryż, mięso ",
-                          description="shdbdicnsidyfgnciudygfcyugnifyseivfumxsyerifsrxmirybg",
-                          preparation_time=240)
-    Recipe.objects.create(name="koktajl", ingredients="wszystko co masz pod reką",
-                          description="shdbdicnsidyfgnciudygfcyugnifyseivfumxsyerifsrxmirybg",
-                          preparation_time=30)
-    Recipe.objects.create(name="Kotlet de volaille", ingredients="askhndirygbc elsrghcmdrgd",
-                          description="shdbdicnsidyfgnciudygfcyugnifyseivfumxsyerifsrxmirybg",
-                          preparation_time=30)
-    Recipe.objects.create(name="zapiekanka", ingredients="asfag, sdgvdh, rgdrtgdt, dtrcgtfcgbt",
-                          description="shdbdicnsidyfgnciudygfcyugnifyseivfumxsyerifsrxmirybg",
-                          preparation_time=30)
+    Plan.objects.create(name="Domowa", description="Niezbyt zdrowa")
+
+    # Recipe.objects.create(name="Naleśniki", ingredients="mąka, woda, sól, dżem",
+    #                       description="to jest opis przepisu",
+    #                       preparation_time=45)
+    # Recipe.objects.create(name="Gołąbki", ingredients="kapusta, ryż, mięso ",
+    #                       description="to jest opis przepisu",
+    #                       preparation_time=120)
+    # Recipe.objects.create(name="koktajl", ingredients="wszystko co masz pod reką",
+    #                       description="to jest opis przepisu",
+    #                       preparation_time=30)
+    # Recipe.objects.create(name="Kotlet de volaille", ingredients="Pierś z kurczaka, jajko, ser",
+    #                       description="to jest opis przepisu",
+    #                       preparation_time=120)
+    # Recipe.objects.create(name="zapiekanka", ingredients="bułka, ser, pieczarki, salami",
+    #                       description="to jest opis przepisu",
+    #                       preparation_time=30)
         
 
 class LandingPage(View):
@@ -70,5 +66,17 @@ class AboutView(View):
 class MainPage(View):
 
     def get(self, request):
-        return render(request, "dashboard.html")
+        last_plan = Plan.objects.latest("created")
+        recipeplans_list = last_plan.recipeplan_set.all().order_by("day_name", "order")
+        day_number = 0
+        day_list =[]
+        for element in recipeplans_list:
+            if element.day_name != day_number:
+                day_list.append(element)
+                day_number = element.day_name
+        ctx = {"last_plan" : last_plan,
+               "recipeplans_list" : recipeplans_list,
+               "day_list" : day_list
+               }
+        return render(request, "dashboard.html", ctx)
 
