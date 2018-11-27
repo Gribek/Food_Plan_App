@@ -1,4 +1,3 @@
-from django.shortcuts import render, HttpResponse, redirect
 from .models import *
 from random import shuffle
 from django.shortcuts import render
@@ -7,6 +6,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def add_test_data_to_database(request):
+
+
     """
     Recipe.objects.create(name="Gulasz", ingredients="mięso, papryka, i kilka innych",
                           description="shdbdicnsidyfgnciudygfcyugnifyseivfumxsyerifsrxmirybg",
@@ -108,10 +109,24 @@ class AboutView(View):
 class MainPage(View):
 
     def get(self, request):
+        last_plan = Plan.objects.latest("created")
+        recipeplans_list = last_plan.recipeplan_set.all().order_by("day_name", "order")
+        day_number = 0
+        day_list =[]
+        for element in recipeplans_list:
+            if element.day_name != day_number:
+                day_list.append(element)
+                day_number = element.day_name
+      
         plans_amount = Plan.objects.count()
         recipes_amount = Recipe.objects.count()
         ctx = {
             'plans': plans_amount,
             'recipes': recipes_amount,
+            "last_plan" : last_plan,
+            "recipeplans_list" : recipeplans_list,
+            "day_list" : day_list,
         }
         return render(request, "dashboard.html", ctx)
+     
+
