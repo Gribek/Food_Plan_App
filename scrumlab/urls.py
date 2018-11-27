@@ -22,7 +22,7 @@ from jedzonko.views import *
 urlpatterns = [
     path('add', add_test_data_to_database),
     path('admin/', admin.site.urls),
-    path('index/', IndexView.as_view()),
+    path('add', add_test_data_to_database),
     re_path(r'^$', LandingPage.as_view()),
     re_path('^main$', MainPage.as_view()),
     # re_path(r'recipe/(?P<id>\d+)', ),
