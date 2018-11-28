@@ -58,14 +58,22 @@
         </thead>
         <tbody class="text-color-lighter">
         {% for recipe in items %}
-        <tr class="d-flex">
-            <td class="col-5">
-                {{ recipe.name }}({{ recipe.votes }}) </td>
-            <td class="col-3"><a href="#" class="btn btn-info rounded-0 text-light">Szczegóły</button></td>
-        </tr>
+            <tr class="d-flex">
+                <td class="col-5">
+                    {{ recipe.name }}({{ recipe.votes }})
+                </td>
+                <td class="col-3"><a href="/recipe/{{ recipe.pk }}" class="btn btn-info rounded-0 text-light">Szczegóły</button></td>
+            </tr>
         {% endfor %}
         </tbody>
-
+        <div class="addlink">
+            <div class="menu-item ">
+                <a href="/recipe/add">
+                    <i class="far fa-plus-square icon-plus-square"></i>
+                    <span class="title">dodaj nowy przepis</span>
+                </a>
+            </div>
+        </div>
     </table>
 </section>
 {% include "pagination.html" %}
