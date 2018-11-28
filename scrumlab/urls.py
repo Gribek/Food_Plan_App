@@ -27,7 +27,7 @@ urlpatterns = [
     re_path('^main$', MainPage.as_view()),
     # re_path(r'recipe/(?P<id>\d+)', ),
     re_path('^recipe/list/$', Recipe_List.as_view()),
-    # re_path(r'recipe/add', ),
+    re_path(r'recipe/add', RecipeAdd.as_view()),
     # re_path(r'recipe/modify/(?P<id>\d+)', ),
     # re_path(r'plan/(?P<id>\d+)', ),
     # re_path(r'plan/add', ),

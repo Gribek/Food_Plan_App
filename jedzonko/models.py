@@ -9,6 +9,7 @@ class Recipe(models.Model):
     updated = models.DateTimeField(auto_now=True)
     preparation_time = models.SmallIntegerField()
     votes = models.IntegerField(null=True)
+    preparation = models.TextField()
 
 
 class Plan(models.Model):
