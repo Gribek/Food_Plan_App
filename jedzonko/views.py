@@ -8,8 +8,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def add_test_data_to_database(request):
-
-
     """
     Recipe.objects.create(name="Gulasz", ingredients="mięso, papryka, i kilka innych",
                           description="shdbdicnsidyfgnciudygfcyugnifyseivfumxsyerifsrxmirybg",
@@ -77,16 +75,15 @@ class Recipe_List(View):
         try:
             items = paginator.page(page)
         except PageNotAnInteger:
-            items = paginator.page(1)     #jeśli nr strony nie będzie liczbą przekieruje na stronę nr 1
-        except EmptyPage:       #jeśli nr strony nie będzie przekieruje nas na ostatnią stronę
-            items = paginator.page(paginator.num_pages) #num_pages - całkowita liczba stron
+            items = paginator.page(1)  # jeśli nr strony nie będzie liczbą przekieruje na stronę nr 1
+        except EmptyPage:  # jeśli nr strony nie będzie przekieruje nas na ostatnią stronę
+            items = paginator.page(paginator.num_pages)  # num_pages - całkowita liczba stron
 
         index = items.number - 1
         max_index = len(paginator.page_range)
         start_index = index - 5 if index >= 5 else 0
         end_index = index + 5 if index <= max_index - 5 else max_index
         page_range = paginator.page_range[start_index:end_index]
-
 
         ctx = {
             'recipes': recipes,
@@ -114,20 +111,20 @@ class MainPage(View):
         last_plan = Plan.objects.latest("created")
         recipeplans_list = last_plan.recipeplan_set.all().order_by("day_name", "order")
         day_number = 0
-        day_list =[]
+        day_list = []
         for element in recipeplans_list:
             if element.day_name != day_number:
                 day_list.append(element)
                 day_number = element.day_name
-      
+
         plans_amount = Plan.objects.count()
         recipes_amount = Recipe.objects.count()
         ctx = {
             'plans': plans_amount,
             'recipes': recipes_amount,
-            "last_plan" : last_plan,
-            "recipeplans_list" : recipeplans_list,
-            "day_list" : day_list,
+            "last_plan": last_plan,
+            "recipeplans_list": recipeplans_list,
+            "day_list": day_list,
         }
         return render(request, "dashboard.html", ctx)
      
@@ -147,11 +144,22 @@ class RecipeAdd(View):
                               preparation_time=time_to_prep,preparation=preparation)
             return redirect("/recipe/list/")
         else:
-            ctx = { "message" : "Wypełnij poprawnie wszystkie pola",
+            context = { "message" : "Wypełnij poprawnie wszystkie pola",
                     "recipe_name" : recipe_name,
                     "recipe_desc" : recipe_desc,
                     "time_to_prep" : time_to_prep,
                     "preparation" : preparation,
                     "ingredients" : ingredients,
                     }
-            return render(request, "app-add-recipe.html", ctx)
+            return render(request, "app-add-recipe.html", context)
+
+
+class RecipeDetails(View):
+    def get(self,request, id):
+        recipe = Recipe.objects.get(pk=id)
+
+        ctx = {
+            'recipe': recipe
+        }
+
+        return render(request, "recipe-details.html", ctx)
