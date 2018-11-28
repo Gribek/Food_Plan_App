@@ -91,8 +91,8 @@
                     </div>
                     <div class="col-2"></div>
                     <ul class="col-5 p-4 list-unstyled">
-                        {% for ingridien in recipe.ingredients.split %}
-                            <li>{{ ingridien }}</li>
+                        {% for i in ingr %}
+                            <li>{{ i }}</li>
                         {% endfor %}
                     </ul>
                 </div>

@@ -1,5 +1,4 @@
-from django.http import HttpResponse
-
+import re
 from .models import *
 from random import shuffle
 from django.shortcuts import render, redirect
@@ -127,11 +126,12 @@ class MainPage(View):
             "day_list": day_list,
         }
         return render(request, "dashboard.html", ctx)
-     
+
+
 class RecipeAdd(View):
 
     def get(self, request):
-        return  render(request, "app-add-recipe.html")
+        return render(request, "app-add-recipe.html")
 
     def post(self, request):
         recipe_name = request.POST.get("recipe_name")
@@ -141,25 +141,43 @@ class RecipeAdd(View):
         ingredients = request.POST.get("ingredients")
         if recipe_name and recipe_desc and time_to_prep and preparation and ingredients:
             Recipe.objects.create(name=recipe_name, ingredients=ingredients, description=recipe_desc,
-                              preparation_time=time_to_prep,preparation=preparation)
+                                  preparation_time=time_to_prep, preparation=preparation)
             return redirect("/recipe/list/")
         else:
-            context = { "message" : "Wypełnij poprawnie wszystkie pola",
-                    "recipe_name" : recipe_name,
-                    "recipe_desc" : recipe_desc,
-                    "time_to_prep" : time_to_prep,
-                    "preparation" : preparation,
-                    "ingredients" : ingredients,
-                    }
+            context = {"message": "Wypełnij poprawnie wszystkie pola",
+                       "recipe_name": recipe_name,
+                       "recipe_desc": recipe_desc,
+                       "time_to_prep": time_to_prep,
+                       "preparation": preparation,
+                       "ingredients": ingredients,
+                       }
             return render(request, "app-add-recipe.html", context)
 
 
 class RecipeDetails(View):
-    def get(self,request, id):
+    def get(self, request, id):
         recipe = Recipe.objects.get(pk=id)
-
+        ingr = re.split("; |,|:", recipe.ingredients)
         ctx = {
-            'recipe': recipe
+            'recipe': recipe,
+            'ingr': ingr,
         }
 
         return render(request, "recipe-details.html", ctx)
+
+
+class PlanList(View):
+    def get(self, request):
+        plans = Plan.objects.all()
+        ctx = {
+            'plans': plans
+        }
+        return render(request, "app-schedules.html", ctx)
+
+class PlanDetails(View):
+    def get(self, request, id):
+        plan = Plan.objects.get(pk=id)
+        ctx = {
+            'plan': plan,
+        }
+        return render(request, "app-details-schedules.html", ctx)
