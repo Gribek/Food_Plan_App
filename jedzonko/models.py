@@ -8,7 +8,7 @@ class Recipe(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     preparation_time = models.SmallIntegerField()
-    votes = models.IntegerField(null=True)
+    votes = models.IntegerField(default=0)
     preparation = models.TextField()
 
 
