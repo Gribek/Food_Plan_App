@@ -1,6 +1,8 @@
+from django.http import HttpResponse
+
 from .models import *
 from random import shuffle
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -125,6 +127,32 @@ class MainPage(View):
             "day_list": day_list,
         }
         return render(request, "dashboard.html", ctx)
+     
+class RecipeAdd(View):
+
+    def get(self, request):
+        return  render(request, "app-add-recipe.html")
+
+    def post(self, request):
+        recipe_name = request.POST.get("recipe_name")
+        recipe_desc = request.POST.get("recipe_desc")
+        time_to_prep = request.POST.get("time_to_prep")
+        preparation = request.POST.get("preparation")
+        ingredients = request.POST.get("ingredients")
+        if recipe_name and recipe_desc and time_to_prep and preparation and ingredients:
+            Recipe.objects.create(name=recipe_name, ingredients=ingredients, description=recipe_desc,
+                              preparation_time=time_to_prep,preparation=preparation)
+            return redirect("/recipe/list/")
+        else:
+            context = { "message" : "Wypełnij poprawnie wszystkie pola",
+                    "recipe_name" : recipe_name,
+                    "recipe_desc" : recipe_desc,
+                    "time_to_prep" : time_to_prep,
+                    "preparation" : preparation,
+                    "ingredients" : ingredients,
+                    }
+            return render(request, "app-add-recipe.html", context)
+
 
 class RecipeDetails(View):
     def get(self,request, id):
