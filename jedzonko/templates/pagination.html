@@ -8,13 +8,13 @@
                     </li>
                 {% else %}
                     <li class="page-items disabled">
-                        <a class="page-link"><span><<</span></a>
+                        <a class="page-link"><span>:)</span></a>
                     </li>
                 {% endif %}
                 {% for i in page_range %}
                     {% if items.number == i %}
                         <li class="page-items active">
-                            <a class="page-link" href="#">{{ i }} <span class="sr-only>">(current)</span></a>
+                            <a class="page-link" href="#"><b>{{ i }}</b></a>
                         </li>
                     {% else %}
                         <li class="page-items"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
@@ -24,7 +24,7 @@
                     <li class="page-items"><a class="page-link" aria-label="Next"
                                                 href="?page={{ items.next_page_number }}">następna >></a></li>
                 {% else %}
-                    <li class="page-items disabled"><a class="page-link"><span>>></span></a></li>
+                    <li class="page-items disabled"><a class="page-link"><span>koniec</span></a></li>
                 {% endif %}
             </ul>
         </nav>
