@@ -174,10 +174,35 @@ class PlanList(View):
         }
         return render(request, "app-schedules.html", ctx)
 
+
 class PlanDetails(View):
     def get(self, request, id):
         plan = Plan.objects.get(pk=id)
+        plan_details = plan.recipeplan_set.all().order_by("day_name", "order")
+        day_number = 0
+        day_list = []
+        for element in plan_details:
+            if element.day_name != day_number:
+                day_list.append(element)
+                day_number = element.day_name
         ctx = {
             'plan': plan,
+            'plan_details': plan_details,
+            'day_list': day_list,
         }
         return render(request, "app-details-schedules.html", ctx)
+
+
+class PlanAdd(View):
+    def get(self, request):
+        return render(request, "app-add-schedules.html")
+
+    def post(self, request):
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        if name and description:
+            Plan.objects.create(name=name, description=description)
+            return redirect("/plan")
+        else:
+            return render(request, "app-add-schedules.html", {'message': "Wypełnij poprawnie wszystkie pola"})
+
