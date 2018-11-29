@@ -1,4 +1,6 @@
 import re
+
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from .models import *
 from random import shuffle
@@ -223,7 +225,23 @@ class PlanAdd(View):
         if name and description:
             new_plan = Plan.objects.create(name=name, description=description)
             request.session['plan_id'] = new_plan.id
-            # Http ustawiłem, żeby sprawdzić czy zapisuje się odpwiednia wartość klucza sesji :)
-            return HttpResponse("Nr id planu to {}".format(request.session['plan_id']))
+            return redirect("plan/add/details")
         else:
             return render(request, "app-add-schedules.html", {'message': "Wypełnij poprawnie wszystkie pola"})
+
+
+class PlanAddDetails(View):
+    def get(self, request):
+        if request.session.get("plan_id") is not None:
+            plan_id = request.session.get("plan_id")
+            ctx = {
+                'plan_id' : plan_id,
+                'recipes' : Recipe.objects.all(),
+                'plan' : Plan.objects.get(id=plan_id),
+            }
+            return render(request, "app-schedules-meal-recipe.html", ctx)
+        else:
+            raise PermissionDenied
+    def post(self, request):  # get działa posta zrobie jutro
+        x = request.POST.get('plan_id')
+        print(x)
