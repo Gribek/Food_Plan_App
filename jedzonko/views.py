@@ -1,3 +1,5 @@
+import re
+
 from django.http import HttpResponse
 
 from .models import *
@@ -77,7 +79,7 @@ class Recipe_List(View):
         except PageNotAnInteger:
             items = paginator.page(1)  # jeśli nr strony nie będzie liczbą przekieruje na stronę nr 1
         except EmptyPage:  # jeśli nr strony nie będzie przekieruje nas na ostatnią stronę
-            items = paginator.page(paginator.num_pages)  # num_pages - całkowita liczba stron
+            items = paginator.page(paginator.num_pages)  # num_pages - całkowita liczba stron - lista
 
         index = items.number - 1
         max_index = len(paginator.page_range)
@@ -127,11 +129,12 @@ class MainPage(View):
             "day_list": day_list,
         }
         return render(request, "dashboard.html", ctx)
-     
+
+
 class RecipeAdd(View):
 
     def get(self, request):
-        return  render(request, "app-add-recipe.html")
+        return render(request, "app-add-recipe.html")
 
     def post(self, request):
         recipe_name = request.POST.get("recipe_name")
@@ -141,25 +144,88 @@ class RecipeAdd(View):
         ingredients = request.POST.get("ingredients")
         if recipe_name and recipe_desc and time_to_prep and preparation and ingredients:
             Recipe.objects.create(name=recipe_name, ingredients=ingredients, description=recipe_desc,
-                              preparation_time=time_to_prep,preparation=preparation)
+                                  preparation_time=time_to_prep, preparation=preparation)
             return redirect("/recipe/list/")
         else:
-            context = { "message" : "Wypełnij poprawnie wszystkie pola",
-                    "recipe_name" : recipe_name,
-                    "recipe_desc" : recipe_desc,
-                    "time_to_prep" : time_to_prep,
-                    "preparation" : preparation,
-                    "ingredients" : ingredients,
-                    }
+            context = {"message": "Wypełnij poprawnie wszystkie pola",
+                       "recipe_name": recipe_name,
+                       "recipe_desc": recipe_desc,
+                       "time_to_prep": time_to_prep,
+                       "preparation": preparation,
+                       "ingredients": ingredients,
+                       }
             return render(request, "app-add-recipe.html", context)
 
 
 class RecipeDetails(View):
-    def get(self,request, id):
+    def get(self, request, id):
         recipe = Recipe.objects.get(pk=id)
-
+        ingr = re.split("; |,|:", recipe.ingredients)
         ctx = {
-            'recipe': recipe
+            'recipe': recipe,
+            'ingr': ingr,
         }
 
         return render(request, "recipe-details.html", ctx)
+
+
+class PlanList(View):
+    def get(self, request):
+        plans = Plan.objects.all().order_by("name")
+
+        paginator = Paginator(plans, 3)
+        page = request.GET.get('page')
+
+        try:
+            items = paginator.page(page)
+        except PageNotAnInteger:
+            items = paginator.page(1)
+        except EmptyPage:
+            items = paginator.page(paginator.num_pages)
+
+        index = items.number - 1
+        max_index = len(paginator.page_range)
+        start_index = index - 5 if index >= 5 else 0
+        end_index = index + 5 if index <= max_index - 5 else max_index
+        page_range = paginator.page_range[start_index:end_index]
+
+        ctx = {
+            'page_range': page_range,
+            'items': items,
+            'plans': plans
+        }
+        return render(request, "app-schedules.html", ctx)
+
+
+class PlanDetails(View):
+    def get(self, request, id):
+        plan = Plan.objects.get(pk=id)
+        plan_details = plan.recipeplan_set.all().order_by("day_name", "order")
+        day_number = 0
+        day_list = []
+        for element in plan_details:
+            if element.day_name != day_number:
+                day_list.append(element)
+                day_number = element.day_name
+        ctx = {
+            'plan': plan,
+            'plan_details': plan_details,
+            'day_list': day_list,
+        }
+        return render(request, "app-details-schedules.html", ctx)
+
+
+class PlanAdd(View):
+    def get(self, request):
+        return render(request, "app-add-schedules.html")
+
+    def post(self, request):
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        if name and description:
+            new_plan = Plan.objects.create(name=name, description=description)
+            request.session['plan_id'] = new_plan.id
+            # Http ustawiłem, żeby sprawdzić czy zapisuje się odpwiednia wartość klucza sesji :)
+            return HttpResponse("Nr id planu to {}".format(request.session['plan_id']))
+        else:
+            return render(request, "app-add-schedules.html", {'message': "Wypełnij poprawnie wszystkie pola"})
