@@ -32,8 +32,8 @@ urlpatterns = [
     re_path(r'^plan$', PlanList.as_view()),
     re_path(r'^plan/add$', PlanAdd.as_view()),
     # re_path(r'^plan/add/details$', ),
-    re_path('^contact$', ContactView.as_view()),
-    re_path('^about$', AboutView.as_view()),
+    re_path('^contact', ContactView.as_view()),
+    re_path('^about', AboutView.as_view()),
 
 
 ]
