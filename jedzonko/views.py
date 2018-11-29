@@ -1,7 +1,5 @@
 import re
-
 from django.http import HttpResponse
-
 from .models import *
 from random import shuffle
 from django.shortcuts import render, redirect
@@ -192,7 +190,7 @@ class PlanList(View):
         ctx = {
             'page_range': page_range,
             'items': items,
-            'plans': plans
+            'plans': plans,
         }
         return render(request, "app-schedules.html", ctx)
 
