@@ -1,4 +1,5 @@
 import re
+from django.http import HttpResponse
 from .models import *
 from random import shuffle
 from django.shortcuts import render, redirect
@@ -76,7 +77,7 @@ class Recipe_List(View):
         except PageNotAnInteger:
             items = paginator.page(1)  # jeśli nr strony nie będzie liczbą przekieruje na stronę nr 1
         except EmptyPage:  # jeśli nr strony nie będzie przekieruje nas na ostatnią stronę
-            items = paginator.page(paginator.num_pages)  # num_pages - całkowita liczba stron
+            items = paginator.page(paginator.num_pages)  # num_pages - całkowita liczba stron - lista
 
         index = items.number - 1
         max_index = len(paginator.page_range)
@@ -168,9 +169,28 @@ class RecipeDetails(View):
 
 class PlanList(View):
     def get(self, request):
-        plans = Plan.objects.all()
+        plans = Plan.objects.all().order_by("name")
+
+        paginator = Paginator(plans, 3)
+        page = request.GET.get('page')
+
+        try:
+            items = paginator.page(page)
+        except PageNotAnInteger:
+            items = paginator.page(1)
+        except EmptyPage:
+            items = paginator.page(paginator.num_pages)
+
+        index = items.number - 1
+        max_index = len(paginator.page_range)
+        start_index = index - 5 if index >= 5 else 0
+        end_index = index + 5 if index <= max_index - 5 else max_index
+        page_range = paginator.page_range[start_index:end_index]
+
         ctx = {
-            'plans': plans
+            'page_range': page_range,
+            'items': items,
+            'plans': plans,
         }
         return render(request, "app-schedules.html", ctx)
 
@@ -201,8 +221,9 @@ class PlanAdd(View):
         name = request.POST.get("name")
         description = request.POST.get("description")
         if name and description:
-            Plan.objects.create(name=name, description=description)
-            return redirect("/plan")
+            new_plan = Plan.objects.create(name=name, description=description)
+            request.session['plan_id'] = new_plan.id
+            # Http ustawiłem, żeby sprawdzić czy zapisuje się odpwiednia wartość klucza sesji :)
+            return HttpResponse("Nr id planu to {}".format(request.session['plan_id']))
         else:
             return render(request, "app-add-schedules.html", {'message': "Wypełnij poprawnie wszystkie pola"})
-
