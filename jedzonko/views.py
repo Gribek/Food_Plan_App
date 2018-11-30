@@ -1,7 +1,7 @@
 import re
 
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from .models import *
 from random import shuffle
 from django.shortcuts import render, redirect
@@ -225,7 +225,7 @@ class PlanAdd(View):
         if name and description:
             new_plan = Plan.objects.create(name=name, description=description)
             request.session['plan_id'] = new_plan.id
-            return redirect("plan/add/details")
+            return redirect("/plan/add/details")
         else:
             return render(request, "app-add-schedules.html", {'message': "Wypełnij poprawnie wszystkie pola"})
 
@@ -243,5 +243,18 @@ class PlanAddDetails(View):
         else:
             raise PermissionDenied
     def post(self, request):  # get działa posta zrobie jutro
-        x = request.POST.get('plan_id')
-        print(x)
+        if int(request.POST.get('plan_id')) == request.session.get("plan_id"):
+            new_plan = Plan.objects.get(pk=request.POST.get('plan_id'))
+            meal_name = request.POST.get("name")
+            recipe = Recipe.objects.get(pk=request.POST.get("recipe"))
+            order = request.POST.get("order")
+            day_name = request.POST.get("day")
+            Recipeplan.objects.create(meal_name=meal_name, recipe=recipe, plan=new_plan ,order=order, day_name=day_name)
+            return redirect("/plan/add/details")
+        else:
+            raise Http404
+
+class PlanReady(View):
+    def get(self, request):
+        del request.session["plan_id"]
+        return redirect("/plan")
